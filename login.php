@@ -10,29 +10,35 @@ if ($submit <> "") {
     $ma_nhan_vien = mysqli_real_escape_string($Myconnection, get_param('ma_nhan_vien'));
     $mat_khau = md5(get_param('mat_khau'));
 
-
-    mysqli_select_db($Myconnection, $database_Myconnection);
+    // khởi tao kết nối đến database
+    mysqli_select_db($Myconnection, $database_Myconnection); // conect, name database
     //-------Truy vấn dữ liệu
     $query_RCNguoidung = "SELECT * FROM tlb_nguoi_dung,tlb_nhan_vien 
     WHERE tlb_nguoi_dung.ma_nhan_vien= tlb_nhan_vien.ma_nhan_vien and  tlb_nguoi_dung.ma_nhan_vien = '" . $ma_nhan_vien . "' and mat_khau = '" . $mat_khau . "' ";
 
+    //Hàm mysqli_query() sẽ thực hiện truy vấn đối với cơ sở dữ liệu.
     $RCNguoidung = mysqli_query($Myconnection, $query_RCNguoidung) or die(mysqli_error($Myconnection));
-    
+
+    //mysqli_fetch_assoc() sẽ tìm và trả về một dòng kết quả của một truy vấn mysqli_query() dưới dạng một mảng kết hợp
     $row_RCNguoidung = mysqli_fetch_assoc($RCNguoidung);
 
+    // mysqli_num_rows() sẽ trả về số hàng kết quả từ hàm mysqli_query()
     $totalRows_RCNguoidung = mysqli_num_rows($RCNguoidung);
 
     $id_role = $row_RCNguoidung['id_role'];
+
+    // Hàm mysqli_free_result() sẽ giải phóng bộ nhớ của biến đã lưu kết quả truy vấn trước đó
     mysqli_free_result($RCNguoidung);
 
 
-    //------ kiểm tra và xác thực đăng nhập
-    //Nếu thông tin đăng nhập không đúng, số dòng dữ liệu truy vấn =0
 
+    //------ kiểm tra và xác thực đăng nhập
+    //Nếu thông tin đăng nhập không đúng, số dòng dữ liệu truy vấn = 0
     if ($totalRows_RCNguoidung == 0) {
         echo '<script language="javascript">alert("Vui lòng nhập lại !");</script>';
         location("login.php");
     }
+
     //Nếu <script language="javascript">alert(" Đăng nhập thành công");</script> sẽ phân quyền và lưu lại Session
     else {
         if ($id_role == 0) // Admin
@@ -68,8 +74,7 @@ if ($submit <> "") {
     }
 }
 ?>
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -100,6 +105,6 @@ if ($submit <> "") {
     <br />
     <?php
     include("include/footer.php")
-?>
+    ?>
 
 </body>
